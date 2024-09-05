@@ -1,3 +1,5 @@
+[![Python application](https://github.com/sako1912/FULLSTACK-GPT/actions/workflows/python-cicd.yml/badge.svg)](https://github.com/sako1912/FULLSTACK-GPT/actions/workflows/python-cicd.yml)
+
 # FULLSTACK-GPT
 
 fullstack-gpt for side project
