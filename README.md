@@ -8,11 +8,10 @@ fullstack-gpt for side project
 
 ## 명령어 for mac
 
-0. env 구성 및 requirements.txt 기준으로 lib 다운
+0. virture env 구성
 
 ```
 python -m venv ./env
-pip install -r requirements.txt
 ```
 
 1. virture enviroment start
@@ -21,10 +20,10 @@ pip install -r requirements.txt
 source env/bin/activate
 ```
 
-2. virture enviroment quick
+2. virture env안에 lib 설치
 
 ```
-deactivate
+pip install -r requirements.txt
 ```
 
 3. start py (아래 명령어로 실행 안되면 env로 시작하는 명령어 실행)
@@ -35,4 +34,10 @@ python main.py
 
 ```
 env python main.py
+```
+
+99. virture enviroment quick
+
+```
+deactivate
 ```
