@@ -5,7 +5,7 @@ from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.storage import LocalFileStore
 
-cache_dir = LocalFileStore("./6.rag/cache")
+cache_dir = LocalFileStore("./cache")
 
 splitter = CharacterTextSplitter.from_tiktoken_encoder(
     separator="\n",

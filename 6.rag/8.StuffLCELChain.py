@@ -5,10 +5,14 @@ from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.storage import LocalFileStore
 from langchain.chains import RetrievalQA
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema.runnable import RunnablePassthrough
 
-llm = ChatOpenAI()
+llm = ChatOpenAI(
+    temperature=0.1,
+)
 
-cache_dir = LocalFileStore("./6.rag/cache")
+cache_dir = LocalFileStore("./cache")
 
 splitter = CharacterTextSplitter.from_tiktoken_encoder(
     separator="\n",
@@ -31,9 +35,16 @@ cache_embeddings = CacheBackedEmbeddings.from_bytes_store(
 #embedding된 data(백터화)를 vectore store에 저장
 vectorestore = FAISS.from_documents(docs, cache_embeddings)
 
-chain = RetrievalQA.from_chain_type(llm,
-                    chain_type="refine", 
-                    retriever=vectorestore.as_retriever() #vectoreStore 뿐만 아니라 DB나 Cloud에서도 조회가능
-                    )
+retriver = vectorestore.as_retriever()
 
-chain.run("describe Victory Mansions")
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are a helpful assistant. Answer questions using only the following context. If you don't know the answer just say you don't know, don't make it up:\n\n{context}"),
+        ("human", "{question}")
+    ]
+)
+
+#RunnablePassthrough 간단하게 설명하면 입력값을 말그대로 통과시켜주는 역할 ( "Describe Victory Mansions"을 넣어줌.)
+chain = ({"context":retriver, "question": RunnablePassthrough()} | prompt | llm)
+
+chain.invoke("Describe Victory Mansions")

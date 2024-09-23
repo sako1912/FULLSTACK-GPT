@@ -1,14 +1,15 @@
+
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
-from langchain.vectorstores import FAISS
+from langchain.vectorstores import Chroma #vectorstore로 사용
 from langchain.storage import LocalFileStore
 from langchain.chains import RetrievalQA
 
 llm = ChatOpenAI()
 
-cache_dir = LocalFileStore("./6.rag/cache")
+cache_dir = LocalFileStore("./cache")
 
 splitter = CharacterTextSplitter.from_tiktoken_encoder(
     separator="\n",
@@ -29,11 +30,11 @@ cache_embeddings = CacheBackedEmbeddings.from_bytes_store(
 )
 
 #embedding된 data(백터화)를 vectore store에 저장
-vectorestore = FAISS.from_documents(docs, cache_embeddings)
+vectorestore = Chroma.from_documents(docs, cache_embeddings)
 
 chain = RetrievalQA.from_chain_type(llm,
-                    chain_type="refine", 
+                    chain_type="stuff", 
                     retriever=vectorestore.as_retriever() #vectoreStore 뿐만 아니라 DB나 Cloud에서도 조회가능
                     )
 
-chain.run("describe Victory Mansions")
+chain.run("where dose Winston live?")
