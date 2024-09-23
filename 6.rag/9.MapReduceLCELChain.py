@@ -30,7 +30,7 @@ vectorstore = FAISS.from_documents(docs, cached_embeddings)
 
 retriever = vectorstore.as_retriever()
 
-
+#qustion에 관련 정보가 있으면 해당 부분을 반환 
 map_doc_prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -45,12 +45,15 @@ map_doc_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+#2. for doc in list of docs(이부분은 3번에 함수에서 같이 진행) | prompt | llm 
 map_doc_chain = map_doc_prompt | llm
 
-
+#3. for response in list of llm respone | put them all together
 def map_docs(inputs):
     documents = inputs["documents"]
     question = inputs["question"]
+    # inputs의 문서들과 질문을 담아 map_doc_chain을 호출하며 응답받은 content을 join으로 하나의 문서로 만듬
+    # AI message이기에 content만 가져옴
     return "\n\n".join(
         map_doc_chain.invoke(
             {"context": doc.page_content, "question": question}
@@ -59,11 +62,15 @@ def map_docs(inputs):
     )
 
 
+#  문서와 질문이 필요
+# RunnableLambda : 내부 어디든 function 실행
 map_chain = {
     "documents": retriever,
     "question": RunnablePassthrough(),
 } | RunnableLambda(map_docs)
 
+#주어진 document(final_doc) 발췌문들과 질문을 보고 최종 답변을 만들어라
+# {context} = final_doc
 final_prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -72,13 +79,13 @@ final_prompt = ChatPromptTemplate.from_messages(
             Given the following extracted parts of a long document and a question, create a final answer. 
             If you don't know the answer, just say that you don't know. Don't try to make up an answer.
             ------
-            {context}
+            {context} 
             """,
         ),
         ("human", "{question}"),
     ]
 )
-
+#4. final doc | promp | llm
 chain = {"context": map_chain, "question": RunnablePassthrough()} | final_prompt | llm
 
 chain.invoke("How many ministries are mentioned")
