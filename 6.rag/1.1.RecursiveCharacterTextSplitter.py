@@ -8,7 +8,7 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=50 #해당 옵션을 주게 되면 문장 중간이 잘리는 경우를 방지할 수 있음 - 앞부분의 일부를 가져옴 (중복)
 )
 
-loader = UnstructuredFileLoader("./6.rag/Chapter 01.txt")
+loader = UnstructuredFileLoader("./files/chapter_one.txt")
 
 #방식 1
 #docs = loader.load()

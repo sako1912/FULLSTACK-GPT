@@ -9,7 +9,7 @@ splitter = CharacterTextSplitter(
     chunk_overlap=100
 )
 
-loader = UnstructuredFileLoader("./6.rag/Chapter 01.txt")
+loader = UnstructuredFileLoader("./files/chapter_one.txt")
 
 #방식 1
 #docs = loader.load()
