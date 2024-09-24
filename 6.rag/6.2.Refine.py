@@ -16,7 +16,7 @@ splitter = CharacterTextSplitter.from_tiktoken_encoder(
     chunk_overlap=100
 )
 
-loader = UnstructuredFileLoader("./6.rag/Chapter 01.txt")
+loader = UnstructuredFileLoader("./files/chapter_one.txt")
 
 docs = loader.load_and_split(text_splitter=splitter)
 
